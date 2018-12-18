@@ -61,13 +61,8 @@ function hasMathMLSupport() {
     document.body.removeChild(div);
     return box && (Math.abs(box.height - 23) <= 1) && (Math.abs(box.width - 77) <= 1);
 }
-(() => {
+export let runMathML = ((mathElement) => {
     if (!hasMathMLSupport()) {
-        const mathNodes = document.querySelectorAll('math');
-        if (mathNodes && mathNodes.length) {
-            for (let i = 0; i < mathNodes.length; i++) {
-                polyfill(mathNodes[i]);
-            }
-        }
+        polyfill(mathElement);
     }
-})();
+});
