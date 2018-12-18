@@ -16,7 +16,8 @@ export default [
       name: 'mathml'
     },
     onwarn,
-    plugins: [resolve(), minify({ comments: false })]
+    plugins: [resolve()]
+    // plugins: [resolve(), minify({ comments: false })]
   },
   {
     input: 'dist/polyfill.js',
@@ -26,6 +27,7 @@ export default [
       name: 'mathmlPolyfill'
     },
     onwarn,
-    plugins: [minify({ comments: false })]
+    plugins: []
+    // plugins: [minify({ comments: false })]
   }
 ];

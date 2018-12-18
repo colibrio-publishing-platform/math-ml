@@ -1,1 +1,75 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});function polyfill(a){const b=document.createElement(getCustomElementName(a));polyfillChildren(b,a);const c=a.parentElement;return c&&(a.insertAdjacentElement("beforebegin",b),c.removeChild(a)),b}function polyfillChildren(a,b){const c=b.childNodes;for(let d=0;d<c.length;d++){const b=c[d];switch(b.nodeType){case Node.TEXT_NODE:if(b.nodeValue){const c=document.createTextNode(b.nodeValue);a.appendChild(c)}break;case Node.ELEMENT_NODE:const c=b,d=document.createElement(getCustomElementName(c)),e=c.attributes;if(e&&e.length)for(let a=0;a<e.length;a++){const b=e[a];d.setAttribute(b.name,b.value)}polyfillChildren(d,c),a.appendChild(d);break;default:}}}function getCustomElementName(a){const b=a.tagName.toLowerCase().trim();switch(b){case"math":return"math-ml";case"none":return"math-none";default:if(0===b.indexOf("m"))return`math-${b.substring(1)}`;}return b}function hasMathMLSupport(){var a=Math.abs;const b=document.createElement("div");b.innerHTML="<math><mspace height='23px' width='77px'/></math>",document.body.appendChild(b);const c=b.firstChild&&b.firstChild.firstChild&&b.firstChild.firstChild.getBoundingClientRect();return document.body.removeChild(b),c&&1>=a(c.height-23)&&1>=a(c.width-77)}let runMathML=a=>{hasMathMLSupport()||polyfill(a)};exports.polyfill=polyfill,exports.runMathML=runMathML;
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function polyfill(mathNode) {
+    const root = document.createElement(getCustomElementName(mathNode));
+    polyfillChildren(root, mathNode);
+    const parent = mathNode.parentElement;
+    if (parent) {
+        mathNode.insertAdjacentElement('beforebegin', root);
+        parent.removeChild(mathNode);
+    }
+    return root;
+}
+function polyfillChildren(target, current) {
+    const children = current.childNodes;
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        switch (child.nodeType) {
+            case Node.TEXT_NODE:
+                if (child.nodeValue) {
+                    const txt = document.createTextNode(child.nodeValue);
+                    target.appendChild(txt);
+                }
+                break;
+            case Node.ELEMENT_NODE:
+                const childElement = child;
+                const n = document.createElement(getCustomElementName(childElement));
+                const attrs = childElement.attributes;
+                if (attrs && attrs.length) {
+                    for (let x = 0; x < attrs.length; x++) {
+                        const attr = attrs[x];
+                        n.setAttribute(attr.name, attr.value);
+                    }
+                }
+                polyfillChildren(n, childElement);
+                target.appendChild(n);
+                break;
+            default:
+                break;
+        }
+    }
+}
+function getCustomElementName(node) {
+    const name = node.tagName.toLowerCase().trim();
+    switch (name) {
+        case 'math':
+            return 'math-ml';
+        case 'none':
+            return 'math-none';
+        default:
+            if (name.indexOf('m') === 0) {
+                return `math-${name.substring(1)}`;
+            }
+            break;
+    }
+    return name;
+}
+// Check adapted from https://developer.mozilla.org/en-US/docs/Web/MathML/Authoring
+function hasMathMLSupport() {
+    const div = document.createElement('div');
+    div.innerHTML = "<math><mspace height='23px' width='77px'/></math>";
+    document.body.appendChild(div);
+    const box = div.firstChild && div.firstChild.firstChild && div.firstChild.firstChild.getBoundingClientRect();
+    document.body.removeChild(div);
+    return box && (Math.abs(box.height - 23) <= 1) && (Math.abs(box.width - 77) <= 1);
+}
+let runMathML = ((mathElement) => {
+    if (!hasMathMLSupport()) {
+        polyfill(mathElement);
+    }
+});
+
+exports.polyfill = polyfill;
+exports.runMathML = runMathML;
