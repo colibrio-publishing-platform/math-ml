@@ -12,7 +12,7 @@ export default [
     input: 'dist/all.js',
     output: {
       file: `dist/bundled/mathml.min.js`,
-      format: 'iife',
+      format: 'cjs',
       name: 'mathml'
     },
     onwarn,
@@ -22,7 +22,7 @@ export default [
     input: 'dist/polyfill.js',
     output: {
       file: `dist/bundled/mathml.polyfill.js`,
-      format: 'iife',
+      format: 'cjs',
       name: 'mathmlPolyfill'
     },
     onwarn,
